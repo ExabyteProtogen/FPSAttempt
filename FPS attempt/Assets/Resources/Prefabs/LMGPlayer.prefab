@@ -150,7 +150,7 @@ Transform:
   - {fileID: 5894494588408533437}
   - {fileID: 640600006659531174}
   m_Father: {fileID: 4125130722074442558}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!95 &6045334020443322156
 Animator:
@@ -4536,7 +4536,7 @@ MonoBehaviour:
   flashlight: {fileID: 4125130723440103350}
   health: 150
   maxHealth: 150
-  weapon: {fileID: 0}
+  weapon: {fileID: 1119182220820344994}
   healthText: {fileID: 4602832334820916246}
   magText: {fileID: 5759869446476776304}
   reserveText: {fileID: 6296346947902511100}
@@ -4598,9 +4598,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 4142169093
+  sceneId: 0
   serverOnly: 0
-  m_AssetId: 
+  m_AssetId: 841f1df1327d6c4459e3464a70b17842
   hasSpawned: 0
 --- !u!114 &454706576293225754
 MonoBehaviour:
@@ -4796,8 +4796,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.638, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 3295272228116202527}
   - {fileID: 4125130723440103349}
+  - {fileID: 3295272228116202527}
   m_Father: {fileID: 4125130721510292833}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4880,7 +4880,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4125130722074442558}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &4125130723440103348
 Light:

@@ -8,7 +8,7 @@ using Mirror;
 	API Reference: https://mirror-networking.com/docs/api/Mirror.NetworkManager.html
 */
 
-public class ChooseWeapon : MessageBase
+public class PlayerSettings : MessageBase
 {
 	public string wep;
 }
@@ -16,9 +16,10 @@ public class ChooseWeapon : MessageBase
 public class NewNetworkManager : NetworkManager
 {	
 	public string weaponChoice;
+	public string playerName;
 	public void AssignWeapon(NetworkConnection conn, string weapon)
     {
-        ChooseWeapon chooseWeapon = new ChooseWeapon
+        PlayerSettings chooseWeapon = new PlayerSettings
         {
             wep = weapon,
         };
@@ -203,12 +204,13 @@ public class NewNetworkManager : NetworkManager
         base.OnClientConnect(conn);
 		
 		//*
-		ChooseWeapon weaponMessage = new ChooseWeapon
+		PlayerSettings playerMessage = new PlayerSettings
 		{
 			wep = weaponChoice
+			plrName = playerName
 		};
 		//*/
-		conn.Send(weaponMessage);
+		conn.Send(playerMessage);
     }
 
     /// <summary>
@@ -250,7 +252,7 @@ public class NewNetworkManager : NetworkManager
     public override void OnStartHost() 
 	{
 		base.OnStartHost();
-        NetworkServer.RegisterHandler<ChooseWeapon>(OnCreateCharacter);
+        NetworkServer.RegisterHandler<PlayerSettings>(OnCreateCharacter);
 	}
 
     /// <summary>
@@ -260,7 +262,7 @@ public class NewNetworkManager : NetworkManager
     public override void OnStartServer() 
 	{
 		base.OnStartServer();
-        NetworkServer.RegisterHandler<ChooseWeapon>(OnCreateCharacter);
+        NetworkServer.RegisterHandler<PlayerSettings>(OnCreateCharacter);
 	}
 
     /// <summary>
@@ -269,7 +271,7 @@ public class NewNetworkManager : NetworkManager
     public override void OnStartClient()
     {
         base.OnStartClient();
-		NetworkServer.RegisterHandler<ChooseWeapon>(OnCreateCharacter);
+		NetworkServer.RegisterHandler<PlayerSettings>(OnCreateCharacter);
     }
 
     /// <summary>
@@ -287,7 +289,7 @@ public class NewNetworkManager : NetworkManager
     /// </summary>
     public override void OnStopClient() { }
 	
-	void OnCreateCharacter(NetworkConnection conn, ChooseWeapon message)
+	void OnCreateCharacter(NetworkConnection conn, PlayerSettings message)
     {
 		Debug.Log("Name: " + message.wep + "Player");
 		Debug.Log("Path: " + "Assets/Resources/Prefabs/" + message.wep + "Player.prefab");
@@ -308,7 +310,7 @@ public class NewNetworkManager : NetworkManager
         NetworkServer.AddPlayerForConnection(conn, gameobject);
     }
 	
-	void OnReplaceCharacter(NetworkConnection conn, ChooseWeapon message)
+	void OnReplaceCharacter(NetworkConnection conn, PlayerSettings message)
     {
 		Debug.Log("Name: " + message.wep + "Player");
 		Debug.Log("Path: " + "Assets/Resources/Prefabs/" + message.wep + "Player.prefab");

@@ -12,6 +12,7 @@ public class MenuScript : NetworkBehaviour
 	public GameObject JoinButton;
 	public GameObject IPfield;
 	public GameObject WeaponField;
+	public GameObject NameField;
 	public string Weapon;
 	//public PlayerController localPlayerController;
 	
@@ -44,6 +45,8 @@ public class MenuScript : NetworkBehaviour
         manager.networkAddress = field.text;
 		field = WeaponField.GetComponent<InputField>();
 		manager.weaponChoice = field.text;
+		field = NameField.GetComponent<InputField>();
+		manager.playerName = field.text;
 		//localPlayerController.wepField = WeaponField;
 		manager.StartClient();
 	}
@@ -53,6 +56,8 @@ public class MenuScript : NetworkBehaviour
 		manager = networkObject.GetComponent<NewNetworkManager>();
 		field = WeaponField.GetComponent<InputField>();
 		manager.weaponChoice = field.text;
+		field = NameField.GetComponent<InputField>();
+		manager.playerName = field.text;
 		manager.StartHost();
 	}
 	/*

@@ -53,11 +53,13 @@ public class PlayerController : NetworkBehaviour
 	private bool escHeld;
 	private PauseScript pauseScript;
 	private Camera targetCam;
-	/*
+	private float lightIntensity = 0;
+	//*
 	[ClientRpc]
 	void RpcToggleFlashlight(GameObject target)
 	{
-		Light targetLight = target.GetComponent<Light>();
+		Transform lightObj = target.transform.GetChild(0).GetChild(0);
+		Light targetLight = lightObj.GetComponent<Light>();
 		if (targetLight.intensity == 0)
 		{
 			targetLight.intensity = 5;
@@ -71,7 +73,9 @@ public class PlayerController : NetworkBehaviour
 	[Command]
 	void CmdToggleFlashlight(GameObject target)
 	{
-		Light targetLight = target.GetComponent<Light>();
+		/*
+		Transform lightObj = target.transform.GetChild(0).GetChild(0);
+		Light targetLight = lightObj.GetComponent<Light>();
 		if (targetLight.intensity == 0)
 		{
 			targetLight.intensity = 5;
@@ -80,6 +84,7 @@ public class PlayerController : NetworkBehaviour
 		{
 			targetLight.intensity = 0;
 		}
+		//*/
 		RpcToggleFlashlight(target);
 	}
 	//*/
@@ -122,6 +127,7 @@ public class PlayerController : NetworkBehaviour
 		if (isClient)
 		{
 			Cursor.lockState = CursorLockMode.Locked;
+			Debug.Log();
 		}
 		
         cam.fieldOfView = fov;
@@ -151,6 +157,7 @@ public class PlayerController : NetworkBehaviour
 			{
 				audioListener.enabled = true;
 			}
+			lightcomp.intensity = lightIntensity;
 		}
 		
 		//Check if ded
@@ -207,13 +214,13 @@ public class PlayerController : NetworkBehaviour
 				fHeld = true;
 				if (lightcomp.intensity == 0)
 				{
-					lightcomp.intensity = 5;
+					lightIntensity = 5;
 				}
 				else
 				{
-					lightcomp.intensity = 0;
+					lightIntensity = 0;
 				}
-				//CmdToggleFlashlight(lightcomp.gameObject);
+				CmdToggleFlashlight(gameObject);
 			}
 		}
 		else
