@@ -4411,6 +4411,7 @@ GameObject:
   - component: {fileID: 3787120396103058227}
   - component: {fileID: 4419348307568666127}
   - component: {fileID: 4193750950565533288}
+  - component: {fileID: 8988352145711619825}
   m_Layer: 0
   m_Name: LMGPlayer
   m_TagString: Player
@@ -4531,6 +4532,7 @@ MonoBehaviour:
   sensitivity: 3
   fov: 70
   cam: {fileID: 4125130722074442559}
+  camObj: {fileID: 4125130722074442553}
   flashlight: {fileID: 4125130723440103350}
   health: 150
   maxHealth: 150
@@ -4596,7 +4598,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 16837185
+  sceneId: 4142169093
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
@@ -4670,8 +4672,8 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 25
+  MaxDistance: 1000
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -4706,7 +4708,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4746,6 +4748,25 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8988352145711619825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4125130721510292830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  target: {fileID: 4125130722074442558}
 --- !u!1 &4125130722074442553
 GameObject:
   m_ObjectHideFlags: 0

@@ -18,6 +18,7 @@ public class PlayerController : NetworkBehaviour
 	public float sensitivity;
 	public int fov;
 	public Camera cam;
+	public GameObject camObj;
 	public GameObject flashlight;
 	
 	//Combat Variables
@@ -51,7 +52,37 @@ public class PlayerController : NetworkBehaviour
 	private bool UIenabled;
 	private bool escHeld;
 	private PauseScript pauseScript;
+	private Camera targetCam;
+	/*
+	[ClientRpc]
+	void RpcToggleFlashlight(GameObject target)
+	{
+		Light targetLight = target.GetComponent<Light>();
+		if (targetLight.intensity == 0)
+		{
+			targetLight.intensity = 5;
+		}
+		else
+		{
+			targetLight.intensity = 0;
+		}
+	}
 	
+	[Command]
+	void CmdToggleFlashlight(GameObject target)
+	{
+		Light targetLight = target.GetComponent<Light>();
+		if (targetLight.intensity == 0)
+		{
+			targetLight.intensity = 5;
+		}
+		else
+		{
+			targetLight.intensity = 0;
+		}
+		RpcToggleFlashlight(target);
+	}
+	//*/
 	[ClientRpc]
 	void RpcRespawn(GameObject target, Vector3 newPos)
 	{
@@ -182,6 +213,7 @@ public class PlayerController : NetworkBehaviour
 				{
 					lightcomp.intensity = 0;
 				}
+				//CmdToggleFlashlight(lightcomp.gameObject);
 			}
 		}
 		else

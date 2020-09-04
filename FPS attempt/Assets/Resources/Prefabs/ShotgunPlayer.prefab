@@ -599,6 +599,7 @@ GameObject:
   - component: {fileID: 4641620926144032013}
   - component: {fileID: 8262879860778879780}
   - component: {fileID: 8895037274651291160}
+  - component: {fileID: 6659758426682974436}
   m_Layer: 0
   m_Name: ShotgunPlayer
   m_TagString: Player
@@ -719,6 +720,7 @@ MonoBehaviour:
   sensitivity: 3
   fov: 70
   cam: {fileID: 9158703239026471720}
+  camObj: {fileID: 9158703239026471726}
   flashlight: {fileID: 9158703240388986785}
   health: 100
   maxHealth: 100
@@ -729,6 +731,7 @@ MonoBehaviour:
   pauseScriptObj: {fileID: 0}
   wepField: {fileID: 0}
   startPositions: []
+  playerDecoObject: {fileID: 0}
 --- !u!114 &8779905524590201598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -762,6 +765,15 @@ MonoBehaviour:
   fullReload: 0
   model: {fileID: 6258344239547671370}
   gunName: Shotgun
+  audioSource: {fileID: 0}
+  hitSound: {fileID: 0}
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  earlyReloadSound: {fileID: 0}
+  hitSoundVolume: 1
+  fireSoundVolume: 1
+  reloadSoundVolume: 1
+  earlyReloadSoundVolume: 1
 --- !u!114 &458605372202360314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -774,7 +786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 1674620219
+  sceneId: 2090819827
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
@@ -828,6 +840,25 @@ MonoBehaviour:
   position: {x: 200, y: 0}
   fontSize: 24
   textColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+--- !u!114 &6659758426682974436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9158703238458094921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  target: {fileID: 9158703239026471721}
 --- !u!1 &9158703239026471726
 GameObject:
   m_ObjectHideFlags: 0

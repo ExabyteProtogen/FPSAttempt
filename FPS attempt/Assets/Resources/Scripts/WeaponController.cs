@@ -50,19 +50,21 @@ public class WeaponController : NetworkBehaviour
 	private int magDiff;
 	private bool escHeld;
 	private bool UIenabled;
-	
+	//*
 	[ClientRpc]
 	void RpcPlayFireSound(GameObject source, float volume)
 	{
 		AudioSource soundSrc = source.GetComponent<AudioSource>();
 		soundSrc.PlayOneShot(fireSound, volume);
 	}
+	//*/
+	
 	//*
 	[Command]
 	void CmdPlayFireSound(GameObject source, float volume)
 	{
-		AudioSource soundSrc = source.GetComponent<AudioSource>();
-		soundSrc.PlayOneShot(fireSound, volume);
+		//AudioSource soundSrc = source.GetComponent<AudioSource>();
+		//soundSrc.PlayOneShot(fireSound, volume);
 		RpcPlayFireSound(source, volume);
 	}
 	//*/
@@ -138,6 +140,7 @@ public class WeaponController : NetworkBehaviour
     void Update()
     {
 		//model.transform.position += model.transform.up * Mathf.Sin(Time.time * 2f) * 10f;
+		
 		if (!hasAuthority)
 		{
 			return;
@@ -159,10 +162,12 @@ public class WeaponController : NetworkBehaviour
 			
 			//Animation
 			anim.Play("Base Layer." + gunName + "Fire");
+			//*
 			if (!(fireSound == null))
 			{
 				CmdPlayFireSound(gameObject, fireSoundVolume);
 			}
+			//*/
 			for (int i = 0; i < pellets; i++)
 			{
 				angleModif = new Vector3(Random.Range(-inaccuracy, inaccuracy), Random.Range(-inaccuracy, inaccuracy), 0);

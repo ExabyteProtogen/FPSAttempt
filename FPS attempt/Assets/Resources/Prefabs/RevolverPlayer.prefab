@@ -1706,6 +1706,7 @@ GameObject:
   - component: {fileID: 7583235787109304724}
   - component: {fileID: 150507651945178905}
   - component: {fileID: 8867917115010154494}
+  - component: {fileID: 5423217600075923750}
   m_Layer: 0
   m_Name: RevolverPlayer
   m_TagString: Player
@@ -1826,6 +1827,7 @@ MonoBehaviour:
   sensitivity: 3
   fov: 70
   cam: {fileID: 7415175202383078295}
+  camObj: {fileID: 8558849007360889213}
   flashlight: {fileID: 1992031816829230618}
   health: 100
   maxHealth: 100
@@ -1870,6 +1872,15 @@ MonoBehaviour:
   fullReload: 1
   model: {fileID: 2809923440276196692}
   gunName: Revolver
+  audioSource: {fileID: 0}
+  hitSound: {fileID: 0}
+  fireSound: {fileID: 0}
+  reloadSound: {fileID: 0}
+  earlyReloadSound: {fileID: 0}
+  hitSoundVolume: 1
+  fireSoundVolume: 1
+  reloadSoundVolume: 1
+  earlyReloadSoundVolume: 1
 --- !u!114 &1268657669090738149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1882,9 +1893,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneId: 0
+  sceneId: 3676772931
   serverOnly: 0
-  m_AssetId: 98a0252df9945344780dab86c0862b04
+  m_AssetId: 
   hasSpawned: 0
 --- !u!114 &7583235787109304724
 MonoBehaviour:
@@ -1936,6 +1947,25 @@ MonoBehaviour:
   position: {x: 200, y: 0}
   fontSize: 24
   textColor: {r: 1, g: 1, b: 1, a: 0.3137255}
+--- !u!114 &5423217600075923750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824409548045988283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 734b48bea0b204338958ee3d885e11f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+  target: {fileID: 2579776167929285065}
 --- !u!1 &8257153367261844010
 GameObject:
   m_ObjectHideFlags: 0
@@ -2194,6 +2224,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 78b348005a52dc746ab426940c458d95, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 79c802268fc7f35469d910c9cec05817, type: 2}
     - target: {fileID: 400000, guid: 78b348005a52dc746ab426940c458d95, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2250,10 +2284,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0.030000014
       objectReference: {fileID: 0}
-    - target: {fileID: 2300000, guid: 78b348005a52dc746ab426940c458d95, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 79c802268fc7f35469d910c9cec05817, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78b348005a52dc746ab426940c458d95, type: 3}
 --- !u!4 &1647601957272003703 stripped
