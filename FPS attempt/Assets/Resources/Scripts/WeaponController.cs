@@ -63,8 +63,8 @@ public class WeaponController : NetworkBehaviour
 	[Command]
 	void CmdPlayFireSound(GameObject source, float volume)
 	{
-		//AudioSource soundSrc = source.GetComponent<AudioSource>();
-		//soundSrc.PlayOneShot(fireSound, volume);
+		AudioSource soundSrc = source.GetComponent<AudioSource>();
+		soundSrc.PlayOneShot(fireSound, volume);
 		RpcPlayFireSound(source, volume);
 	}
 	//*/

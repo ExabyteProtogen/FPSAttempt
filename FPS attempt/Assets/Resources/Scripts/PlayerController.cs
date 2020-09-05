@@ -37,6 +37,13 @@ public class PlayerController : NetworkBehaviour
 	public GameObject wepField;
 	public List<Vector3> startPositions;
 	public GameObject playerDecoObject;
+	[SyncVar]
+	public string playerName;
+	
+	//Voice Variables
+	public AudioSource audioSource;
+	//public List<AudioClip> killLines;
+	public AudioClip killLine;
 	
 	private InputField field;
 	private AudioListener audioListener;
@@ -54,7 +61,7 @@ public class PlayerController : NetworkBehaviour
 	private PauseScript pauseScript;
 	private Camera targetCam;
 	private float lightIntensity = 0;
-	//*
+	
 	[ClientRpc]
 	void RpcToggleFlashlight(GameObject target)
 	{
@@ -73,21 +80,9 @@ public class PlayerController : NetworkBehaviour
 	[Command]
 	void CmdToggleFlashlight(GameObject target)
 	{
-		/*
-		Transform lightObj = target.transform.GetChild(0).GetChild(0);
-		Light targetLight = lightObj.GetComponent<Light>();
-		if (targetLight.intensity == 0)
-		{
-			targetLight.intensity = 5;
-		}
-		else
-		{
-			targetLight.intensity = 0;
-		}
-		//*/
 		RpcToggleFlashlight(target);
 	}
-	//*/
+	
 	[ClientRpc]
 	void RpcRespawn(GameObject target, Vector3 newPos)
 	{
@@ -117,6 +112,11 @@ public class PlayerController : NetworkBehaviour
 		health -= damage;
 	}
 	
+	public void rewardKill()
+	{
+		audioSource.PlayOneShot(killLine, 1f);
+	}
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -127,7 +127,6 @@ public class PlayerController : NetworkBehaviour
 		if (isClient)
 		{
 			Cursor.lockState = CursorLockMode.Locked;
-			Debug.Log();
 		}
 		
         cam.fieldOfView = fov;

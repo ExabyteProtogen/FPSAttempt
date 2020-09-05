@@ -11,6 +11,7 @@ using Mirror;
 public class PlayerSettings : MessageBase
 {
 	public string wep;
+	public string plrName;
 }
 
 public class NewNetworkManager : NetworkManager
@@ -206,11 +207,12 @@ public class NewNetworkManager : NetworkManager
 		//*
 		PlayerSettings playerMessage = new PlayerSettings
 		{
-			wep = weaponChoice
+			wep = weaponChoice,
 			plrName = playerName
 		};
 		//*/
 		conn.Send(playerMessage);
+		Debug.Log(playerName);
     }
 
     /// <summary>
@@ -297,17 +299,17 @@ public class NewNetworkManager : NetworkManager
         // Manager but you can use different prefabs per race for example
         //GameObject gameobject = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.wep + "Player.prefab"));
 		int spawnPointIndex = Random.Range(0, startPositions.Count);
-		Debug.Log(spawnPointIndex);
-		Debug.Log(startPositions.Count);
 		Vector3 spawnPoint = startPositions[spawnPointIndex].position;
-		GameObject gameobject = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.wep + "Player"), spawnPoint, Quaternion.identity);
+		GameObject plr = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.wep + "Player"), spawnPoint, Quaternion.identity);
 
         // Apply data from the message however appropriate for your game
         // Typically Player would be a component you write with syncvars or properties
-        //Player player = gameobject.GetComponent<Player>();
+        PlayerController plrCtrlr = plr.GetComponent<PlayerController>();
+		plrCtrlr.playerName = message.plrName;
+		plr.name = message.plrName;
 
         // call this to use this gameobject as the primary controller
-        NetworkServer.AddPlayerForConnection(conn, gameobject);
+        NetworkServer.AddPlayerForConnection(conn, plr);
     }
 	
 	void OnReplaceCharacter(NetworkConnection conn, PlayerSettings message)
@@ -318,8 +320,6 @@ public class NewNetworkManager : NetworkManager
 		GameObject oldPlayer = conn.identity.gameObject;
 
 		int spawnPointIndex = Random.Range(0, startPositions.Count);
-		Debug.Log(spawnPointIndex);
-		Debug.Log(startPositions.Count);
 		Vector3 spawnPoint = startPositions[spawnPointIndex].position;
 		GameObject gameobject = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.wep + "Player"), spawnPoint, Quaternion.identity);
 
