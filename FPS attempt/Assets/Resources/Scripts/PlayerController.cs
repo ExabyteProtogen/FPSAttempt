@@ -5,9 +5,17 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum Teams
+{
+	Red,
+	Blue,
+    None
+}
+
 public class PlayerController : NetworkBehaviour
 {
 	//Movement Variables
+	[Header("Movement Variables")]
 	public float moveSpeed;
 	public float jumpHight;
 	public float jumpDelay;
@@ -15,35 +23,43 @@ public class PlayerController : NetworkBehaviour
 	public float sprintMultiplier;
 	
 	//Camera Variables
+	[Header("Camera Variables")]
 	public float sensitivity;
+	[Range(10, 150)]
 	public int fov;
 	public Camera cam;
 	public GameObject camObj;
 	public GameObject flashlight;
 	
 	//Combat Variables
+	[Header("Combat Variables")]
 	[SyncVar]
 	public int health;
 	public int maxHealth;
 	public GameObject weapon;
+	[SyncVar]
+	public Teams team = Teams.None;
 	
 	//UI Variables
+	[Header("UI Variables")]
 	public Text healthText;
 	public Text magText;
 	public Text reserveText;
 	public GameObject pauseScriptObj;
 	
+	//Voice Variables
+	[Header("Voice Variables")]
+	public AudioSource audioSource;
+	//public List<AudioClip> killLines;
+	public AudioClip killLine;
+	
 	//Misc Variables
+	[Header("Misc Stuff")]
 	public GameObject wepField;
 	public List<Vector3> startPositions;
 	public GameObject playerDecoObject;
 	[SyncVar]
 	public string playerName;
-	
-	//Voice Variables
-	public AudioSource audioSource;
-	//public List<AudioClip> killLines;
-	public AudioClip killLine;
 	
 	private InputField field;
 	private AudioListener audioListener;
@@ -61,7 +77,83 @@ public class PlayerController : NetworkBehaviour
 	private PauseScript pauseScript;
 	private Camera targetCam;
 	private float lightIntensity = 0;
-	
+	//public Material materialRed;
+	//public Material materialBlue;
+
+	[ClientRpc]
+	void RpcSetTeamColors(GameObject obj, Teams team)
+	{
+		Debug.Log("(Rpc) Setting player color to " + team.ToString());
+		Debug.Log(obj.name);
+		Debug.Log(team.ToString());
+		Debug.Log("Materials/Playermodel" + team.ToString());
+		Renderer renderer = obj.GetComponent<Renderer>();
+		Debug.Log(renderer);
+		Debug.Log((Material)Resources.Load("Materials/Playermodel" + team.ToString()));
+		renderer.material = (Material)Resources.Load("Materials/Playermodel" + team.ToString());
+		/*
+		foreach (Transform child in transform)
+		{
+			GameObject gameObj = child.gameObject;
+			Renderer renderer = gameObj.GetComponent<Renderer>();
+			//if (!(renderer == null))
+			//{
+				switch (team)
+				{
+					case Teams.Red:
+						renderer.material = materialRed;
+						break;
+					case Teams.Blue:
+						renderer.material = materialBlue;
+						break;
+					default:
+						break;
+				}
+			//}
+		}
+		//*/
+	}
+
+	[Command]
+	void CmdSetTeamColors(GameObject obj, Teams team)
+	{
+		Debug.Log("(Cmd) Setting player color to " + team.ToString());
+		Debug.Log(obj.name);
+		Debug.Log(team.ToString());
+		Debug.Log("Materials/Playermodel" + team.ToString());
+		Renderer renderer = obj.GetComponent<Renderer>();
+		Debug.Log(renderer);
+		Debug.Log((Material)Resources.Load("Materials/Playermodel" + team.ToString()));
+		renderer.material = (Material)Resources.Load("Materials/Playermodel" + team.ToString());
+		//Renderer renderer = obj.GetComponent<Renderer>();
+		//renderer.material = (Material)Resources.Load("Materials/Playermodel" + team.ToString());
+		/*
+		foreach (Transform child in transform)
+		{
+			GameObject gameObj = child.gameObject;
+			Renderer renderer = gameObj.GetComponent<Renderer>();
+			//if (!(renderer == null))
+			//{
+				switch (team)
+				{
+					case Teams.Red:
+						Debug.Log("Red team found, using Red Material");
+						renderer.material = materialRed;
+						break;
+					case Teams.Blue:
+						Debug.Log("Blue team found, using Blue Material");
+						renderer.material = materialBlue;
+						break;
+					default:
+						Debug.Log("No team found, using default Material");
+						break;
+				}
+			//}
+		}
+		//*/
+		RpcSetTeamColors(obj, team);
+	}
+
 	[ClientRpc]
 	void RpcToggleFlashlight(GameObject target)
 	{
@@ -128,6 +220,10 @@ public class PlayerController : NetworkBehaviour
 		{
 			Cursor.lockState = CursorLockMode.Locked;
 		}
+
+		//materialRed = (Material)Resources.Load("Materials/GunPolymerRed");
+		//materialBlue = (Material)Resources.Load("Materials/GunPolymerBlue");
+		
 		
         cam.fieldOfView = fov;
 		lightcomp = flashlight.GetComponent<Light>();
@@ -137,6 +233,10 @@ public class PlayerController : NetworkBehaviour
 		{
 			playerDecoObject.layer = 9;
 		}
+
+		Debug.Log(team);
+
+		CmdSetTeamColors(gameObject, team);
     }
 
     // Update is called once per frame
@@ -180,7 +280,7 @@ public class PlayerController : NetworkBehaviour
 		{
 			speed = moveSpeed;
 		}
-		
+
 		if (!UIenabled)
 		{
 			rotY += Input.GetAxis("Mouse X") * sensitivity;
@@ -280,5 +380,10 @@ public class PlayerController : NetworkBehaviour
 	public void PauseMenuClose()
 	{
 		UIenabled = false;
+	}
+
+	void OnStartLocalPlayer()
+	{
+		CmdSetTeamColors(gameObject, team);
 	}
 }

@@ -5,29 +5,29 @@ using UnityEngine;
 
 public class WeaponController : NetworkBehaviour
 {
+	[Header("Weapon Performance Variables")]
 	public float rof;
 	public int damage;
 	public int range;
-	
-	public Camera cam;
-	//public GameObject hitsphere;
-	public GameObject hitparticles;
-	public bool isSemiAuto;
-	public bool usesAmmo = true;
-	public int magCap;
-	public int mag;
-	public int maxSpareAmmo;
-	public int spareAmmo;
 	public float inaccuracy;
 	public int pellets;
+	public int magCap;
+	public int mag;
+
+	[Header("Weapon Settings")]
+	public bool isSemiAuto;
+	public bool usesAmmo = true;
+	public int maxSpareAmmo;
+	public int spareAmmo;
 	public float reloadTime;
 	public float earlyReloadTime;
 	public bool fullReload;
 	public GameObject model;
 	public string gunName;
-	public AudioSource audioSource;
 	
 	//Sounds
+	[Header("Audio Settings")]
+	public AudioSource audioSource;
 	public AudioClip hitSound;
 	public AudioClip fireSound;
 	public AudioClip reloadSound;
@@ -38,6 +38,11 @@ public class WeaponController : NetworkBehaviour
 	public float fireSoundVolume = 1;
 	public float reloadSoundVolume = 1;
 	public float earlyReloadSoundVolume = 1;
+
+	//Misc Stuff
+	[Header("Misc Stuff")]
+	public Camera cam;
+	public GameObject hitparticles;
 	
 	private Animator anim;
 	private GameObject target;
@@ -186,10 +191,14 @@ public class WeaponController : NetworkBehaviour
 					{
 						//...and deal it if it can
 						target = hit.collider.gameObject;
-						CmdDamageTarget(target, damage);
-						if (!(hitSound == null))
+						targetScript = target.GetComponent<PlayerController>();
+						if (gameObject.GetComponent<PlayerController>().team != Teams.None & (targetScript.team != gameObject.GetComponent<PlayerController>().team))
 						{
-							audioSource.PlayOneShot(hitSound, hitSoundVolume);
+							CmdDamageTarget(target, damage);
+							if (!(hitSound == null))
+							{
+								audioSource.PlayOneShot(hitSound, hitSoundVolume);
+							}
 						}
 					}
 				}

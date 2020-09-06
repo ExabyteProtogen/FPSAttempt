@@ -14,11 +14,22 @@ public class MenuScript : NetworkBehaviour
 	public GameObject WeaponField;
 	public GameObject NameField;
 	public string Weapon;
+	public Teams team;
 	//public PlayerController localPlayerController;
 	
 	private NewNetworkManager manager;
 	private NetworkDiscovery discovery;
 	private InputField field;
+
+	public void SetRedTeam()
+	{
+		team = Teams.Red;
+	}
+
+	public void SetBlueTeam()
+	{
+		team = Teams.Blue;
+	}
 	
 	void Start()
 	{
@@ -47,6 +58,7 @@ public class MenuScript : NetworkBehaviour
 		manager.weaponChoice = field.text;
 		field = NameField.GetComponent<InputField>();
 		manager.playerName = field.text;
+		manager.playerTeam = team;
 		//localPlayerController.wepField = WeaponField;
 		manager.StartClient();
 	}
@@ -58,6 +70,7 @@ public class MenuScript : NetworkBehaviour
 		manager.weaponChoice = field.text;
 		field = NameField.GetComponent<InputField>();
 		manager.playerName = field.text;
+		manager.playerTeam = team;
 		manager.StartHost();
 	}
 	/*

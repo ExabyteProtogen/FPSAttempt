@@ -12,12 +12,14 @@ public class PlayerSettings : MessageBase
 {
 	public string wep;
 	public string plrName;
+    internal Teams plrTeam;
 }
 
 public class NewNetworkManager : NetworkManager
 {	
 	public string weaponChoice;
 	public string playerName;
+    public Teams playerTeam;
 	public void AssignWeapon(NetworkConnection conn, string weapon)
     {
         PlayerSettings chooseWeapon = new PlayerSettings
@@ -208,7 +210,8 @@ public class NewNetworkManager : NetworkManager
 		PlayerSettings playerMessage = new PlayerSettings
 		{
 			wep = weaponChoice,
-			plrName = playerName
+			plrName = playerName,
+            plrTeam = playerTeam
 		};
 		//*/
 		conn.Send(playerMessage);
@@ -306,6 +309,7 @@ public class NewNetworkManager : NetworkManager
         // Typically Player would be a component you write with syncvars or properties
         PlayerController plrCtrlr = plr.GetComponent<PlayerController>();
 		plrCtrlr.playerName = message.plrName;
+        plrCtrlr.team = message.plrTeam;
 		plr.name = message.plrName;
 
         // call this to use this gameobject as the primary controller
