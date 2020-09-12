@@ -2,6 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Mirror;
+using System.Collections.Generic;
 
 /*
 	Documentation: https://mirror-networking.com/docs/Components/NetworkManager.html
@@ -17,6 +18,7 @@ public class PlayerSettings : MessageBase
 
 public class NewNetworkManager : NetworkManager
 {	
+    public List<Transform> mySpawns;
 	public string weaponChoice;
 	public string playerName;
     public Teams playerTeam;
@@ -301,15 +303,26 @@ public class NewNetworkManager : NetworkManager
         // playerPrefab is the one assigned in the inspector in Network
         // Manager but you can use different prefabs per race for example
         //GameObject gameobject = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.wep + "Player.prefab"));
-		int spawnPointIndex = Random.Range(0, startPositions.Count);
-		Vector3 spawnPoint = startPositions[spawnPointIndex].position;
-		GameObject plr = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.wep + "Player"), spawnPoint, Quaternion.identity);
+		
+        Debug.Log(mySpawns);
+        foreach (Transform tf in startPositions)
+        {
+            Debug.Log(tf.gameObject.name);
+            if (tf.gameObject.tag == message.plrTeam.ToString() + "Spawn")
+            {
+                mySpawns.Add(tf);
+            }
+        }
+        int spawnPointIndex = Random.Range(0, mySpawns.Count);
+		Vector3 spawnPoint = mySpawns[spawnPointIndex].position;
+		GameObject plr = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.plrTeam.ToString() + message.wep + "Player"), spawnPoint, Quaternion.identity);
 
         // Apply data from the message however appropriate for your game
         // Typically Player would be a component you write with syncvars or properties
         PlayerController plrCtrlr = plr.GetComponent<PlayerController>();
 		plrCtrlr.playerName = message.plrName;
         plrCtrlr.team = message.plrTeam;
+        plrCtrlr.character = message.wep;
 		plr.name = message.plrName;
 
         // call this to use this gameobject as the primary controller
@@ -325,7 +338,7 @@ public class NewNetworkManager : NetworkManager
 
 		int spawnPointIndex = Random.Range(0, startPositions.Count);
 		Vector3 spawnPoint = startPositions[spawnPointIndex].position;
-		GameObject gameobject = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.wep + "Player"), spawnPoint, Quaternion.identity);
+		GameObject gameobject = (GameObject)Instantiate(Resources.Load("Prefabs/" + message.plrTeam.ToString() + message.wep + "Player"), spawnPoint, Quaternion.identity);
 
         NetworkServer.ReplacePlayerForConnection(conn, gameobject);
 		NetworkServer.Destroy(oldPlayer);

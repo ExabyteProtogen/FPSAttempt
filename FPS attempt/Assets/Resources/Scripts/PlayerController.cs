@@ -45,7 +45,7 @@ public class PlayerController : NetworkBehaviour
 	public Text healthText;
 	public Text magText;
 	public Text reserveText;
-	public GameObject pauseScriptObj;
+	public Text interactionText;
 	
 	//Voice Variables
 	[Header("Voice Variables")]
@@ -60,6 +60,14 @@ public class PlayerController : NetworkBehaviour
 	public GameObject playerDecoObject;
 	[SyncVar]
 	public string playerName;
+	public bool cameraLock = false;
+	public bool movementLock = false;
+	public bool weaponLock = false;
+	private GameObject[] spawns;
+	public GameObject buildablePrefab;
+
+	//Character Specific Things
+	[Header("Character Specifics")]
 	
 	private InputField field;
 	private AudioListener audioListener;
@@ -74,84 +82,44 @@ public class PlayerController : NetworkBehaviour
 	private float rotX;
 	private bool UIenabled;
 	private bool escHeld;
+	private bool qHeld;
 	private PauseScript pauseScript;
 	private Camera targetCam;
 	private float lightIntensity = 0;
+	private bool buildableSpawned;
+	private GameObject turret;
+	private RaycastHit rayHit;
+	private Interactable targetScript;
+	private bool eHeld = false;
+	public string character;
 	//public Material materialRed;
 	//public Material materialBlue;
 
+	[Command]
+    void CmdGiveAuthority(GameObject _target)
+    {
+        _target.GetComponent<NetworkIdentity>().AssignClientAuthority(connectionToClient);
+    }
+
 	[ClientRpc]
-	void RpcSetTeamColors(GameObject obj, Teams team)
+	void RpcSyncTurretSpawn(GameObject obj)
 	{
-		Debug.Log("(Rpc) Setting player color to " + team.ToString());
-		Debug.Log(obj.name);
-		Debug.Log(team.ToString());
-		Debug.Log("Materials/Playermodel" + team.ToString());
-		Renderer renderer = obj.GetComponent<Renderer>();
-		Debug.Log(renderer);
-		Debug.Log((Material)Resources.Load("Materials/Playermodel" + team.ToString()));
-		renderer.material = (Material)Resources.Load("Materials/Playermodel" + team.ToString());
-		/*
-		foreach (Transform child in transform)
-		{
-			GameObject gameObj = child.gameObject;
-			Renderer renderer = gameObj.GetComponent<Renderer>();
-			//if (!(renderer == null))
-			//{
-				switch (team)
-				{
-					case Teams.Red:
-						renderer.material = materialRed;
-						break;
-					case Teams.Blue:
-						renderer.material = materialBlue;
-						break;
-					default:
-						break;
-				}
-			//}
-		}
-		//*/
+		turret = obj;
 	}
 
 	[Command]
-	void CmdSetTeamColors(GameObject obj, Teams team)
+	void CmdPlaceBuildable(Vector3 pos, Vector3 normal)
 	{
-		Debug.Log("(Cmd) Setting player color to " + team.ToString());
-		Debug.Log(obj.name);
-		Debug.Log(team.ToString());
-		Debug.Log("Materials/Playermodel" + team.ToString());
-		Renderer renderer = obj.GetComponent<Renderer>();
-		Debug.Log(renderer);
-		Debug.Log((Material)Resources.Load("Materials/Playermodel" + team.ToString()));
-		renderer.material = (Material)Resources.Load("Materials/Playermodel" + team.ToString());
-		//Renderer renderer = obj.GetComponent<Renderer>();
-		//renderer.material = (Material)Resources.Load("Materials/Playermodel" + team.ToString());
-		/*
-		foreach (Transform child in transform)
-		{
-			GameObject gameObj = child.gameObject;
-			Renderer renderer = gameObj.GetComponent<Renderer>();
-			//if (!(renderer == null))
-			//{
-				switch (team)
-				{
-					case Teams.Red:
-						Debug.Log("Red team found, using Red Material");
-						renderer.material = materialRed;
-						break;
-					case Teams.Blue:
-						Debug.Log("Blue team found, using Blue Material");
-						renderer.material = materialBlue;
-						break;
-					default:
-						Debug.Log("No team found, using default Material");
-						break;
-				}
-			//}
-		}
-		//*/
-		RpcSetTeamColors(obj, team);
+		GameObject turretObj = Instantiate(buildablePrefab, pos, Quaternion.FromToRotation(Vector3.up, normal) * gameObject.transform.rotation);
+		NetworkServer.Spawn(turretObj, connectionToClient);
+		RpcSyncTurretSpawn(turretObj);
+		return;
+	}
+
+	void despawnBuildable(GameObject _turret)
+	{
+		Destroy(_turret);
+		return;
 	}
 
 	[ClientRpc]
@@ -224,6 +192,7 @@ public class PlayerController : NetworkBehaviour
 		//materialRed = (Material)Resources.Load("Materials/GunPolymerRed");
 		//materialBlue = (Material)Resources.Load("Materials/GunPolymerBlue");
 		
+		gameObject.transform.GetChild(1).gameObject.SetActive(true);
 		
         cam.fieldOfView = fov;
 		lightcomp = flashlight.GetComponent<Light>();
@@ -234,9 +203,12 @@ public class PlayerController : NetworkBehaviour
 			playerDecoObject.layer = 9;
 		}
 
+		Debug.Log(team.ToString() + "Spawn");
+		spawns = GameObject.FindGameObjectsWithTag(team.ToString() + "Spawn");
+
 		Debug.Log(team);
 
-		CmdSetTeamColors(gameObject, team);
+		//CmdSetTeamColors(gameObject, team);
     }
 
     // Update is called once per frame
@@ -258,18 +230,76 @@ public class PlayerController : NetworkBehaviour
 			}
 			lightcomp.intensity = lightIntensity;
 		}
-		
+		Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out rayHit, 1.5f);
+		//Debug.Log(rayHit.transform.gameObject);
+		try
+		{
+			targetScript = rayHit.collider.gameObject.GetComponentInParent<Interactable>();
+		}
+		catch (NullReferenceException)
+		{
+			interactionText.text = "";
+			interactionText.enabled = false;
+			targetScript = null;
+			//Debug.Log("No interaction script found.");
+		}
+		finally
+		{
+			if (!(targetScript == null))
+			{
+				interactionText.text = targetScript.displayOnHover;
+				interactionText.enabled = true;
+				//Debug.Log(targetScript.gameObject);
+			}
+			else
+			{
+				interactionText.text = "";
+				interactionText.enabled = false;
+			}
+		}
+		/*
+		if (!(targetScript == null))
+		{
+			interactionText.text = targetScript.displayOnHover;
+			interactionText.enabled = true;
+			//Debug.Log(targetScript.gameObject);
+		}
+		else
+		{
+			interactionText.text = "";
+			interactionText.enabled = false;
+			//Debug.Log("No interaction script found.");
+		}
+		//*/
+
 		//Check if ded
 		if (health <= 0)
 		{
-			CmdRespawn(gameObject, new Vector3(0, 2, 95));
+			try
+			{
+				int spawnPointIndex = UnityEngine.Random.Range(0, spawns.Length);
+				Vector3 spawnPoint = spawns[spawnPointIndex].transform.position;
+				CmdRespawn(gameObject, spawnPoint);
+				targetScript.UnsetUser(gameObject);
+			}
+			catch
+			{
+				return;
+			}
+			/*
+			Debug.Log(spawns.Count);
+			int spawnPointIndex = UnityEngine.Random.Range(0, spawns.Count);
+			Vector3 spawnPoint = spawns[spawnPointIndex].position;
+			CmdRespawn(gameObject, spawnPoint);
 			Debug.Log("Respawning Player");
+			//*/
+			
 		}
 		
 		//UI
-		healthText.text = "Health: " + health;
-		magText.text = "Magazine: " + gameObject.GetComponent<WeaponController>().mag + "/" + gameObject.GetComponent<WeaponController>().magCap;
-		reserveText.text = "Reserve: " + gameObject.GetComponent<WeaponController>().spareAmmo;
+		healthText.text = health.ToString();
+		magText.text = gameObject.GetComponent<WeaponController>().mag + "/" + gameObject.GetComponent<WeaponController>().magCap;
+		reserveText.text = gameObject.GetComponent<WeaponController>().spareAmmo.ToString();
 		
 		//Movement
 		if (Input.GetKey(KeyCode.RightShift) | Input.GetKey(KeyCode.LeftShift))
@@ -288,8 +318,11 @@ public class PlayerController : NetworkBehaviour
 			float horizontalMovement = Input.GetAxis("Horizontal") * speed * Time.deltaTime;
 			float verticalMovement = Input.GetAxis("Vertical") * speed * Time.deltaTime;
 		
-			transform.Translate(horizontalMovement, 0, verticalMovement);
-			transform.eulerAngles = new Vector3(0, rotY, 0);
+			if (movementLock == false)
+			{
+				transform.Translate(horizontalMovement, 0, verticalMovement);
+				transform.eulerAngles = new Vector3(0, rotY, 0);
+			}
 			
 			if (canJump == true & Time.time > lastJump + jumpDelay)
 			{
@@ -297,10 +330,13 @@ public class PlayerController : NetworkBehaviour
 				RigidBody.AddForce(0, jumpMovement, 0, ForceMode.Impulse);
 				lastJump = Time.time;
 			}
-			
-			rotX += Input.GetAxis("Mouse Y") * sensitivity;
-			rotX = Mathf.Clamp(rotX, -90, 90);
-			cam.transform.eulerAngles = new Vector3(-rotX, rotY, 0);
+
+			if (cameraLock == false)
+			{
+				rotX += Input.GetAxis("Mouse Y") * sensitivity;
+				rotX = Mathf.Clamp(rotX, -90, 90);
+				cam.transform.eulerAngles = new Vector3(-rotX, rotY, 0);
+			}
 		}
 		
 		//cam.transform.position += cam.transform.up * Mathf.Sin(Time.time * 2f) * 0.001f;
@@ -327,15 +363,25 @@ public class PlayerController : NetworkBehaviour
 			fHeld = false;
 		}
 		
-		if (Input.GetKey("p"))
+		if (Input.GetKey("p") & pHeld == false)
 		{
-			if (pHeld == false)
-			{
+			{	
+				//Todo: Try using a cooldown instead.
+				int spawnPointIndex = UnityEngine.Random.Range(0, spawns.Length);
+				Vector3 spawnPoint = spawns[spawnPointIndex].transform.position;
+				CmdRespawn(gameObject, spawnPoint);
+				try
+				{
+					targetScript.UnsetUser(gameObject);
+				}
+				catch
+				{
+					return;
+				}
 				pHeld = true;
-				CmdRespawn(gameObject, new Vector3(0, 2, 95));
 			}
 		}
-		else
+		if (!Input.GetKey("p"))
 		{
 			pHeld = false;
 		}
@@ -357,6 +403,96 @@ public class PlayerController : NetworkBehaviour
 		if (!Input.GetKey(KeyCode.Escape))
 		{
 			escHeld = false;
+		}
+		//*
+		if (Input.GetKey("q") & qHeld == false)
+		{
+			qHeld = true;
+			switch (character)
+			{
+				case "Turret":
+				{
+					if (buildableSpawned)
+					{
+						if (targetScript != null && targetScript.GetType().Name == "TurretScript")
+						{
+							buildableSpawned = false;
+							despawnBuildable(turret);
+						}
+					}
+					else
+					{
+						bool hitCollider = Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out rayHit, 5f);
+						if (hitCollider)
+						{
+							if (Vector3.Angle(rayHit.normal, Vector3.up) == 0)
+							{
+								CmdPlaceBuildable(rayHit.point, rayHit.normal);
+								buildableSpawned = true;
+							}
+						}
+					}
+					return;
+				}
+
+				case "Crate":
+				{
+					if (buildableSpawned)
+					{
+						if (targetScript != null && targetScript.GetType().Name == "CrateScript")
+						{
+							CrateScript targetScript = (CrateScript)gameObject.GetComponent<PlayerController>().targetScript;
+							if (!targetScript.onCooldown)
+							{
+								buildableSpawned = false;
+								despawnBuildable(turret);
+							}
+						}
+					}
+					else
+					{
+						bool hitCollider = Physics.Raycast(cam.transform.position, cam.transform.TransformDirection(Vector3.forward), out rayHit, 5f);
+						if (hitCollider)
+						{
+							if (Vector3.Angle(rayHit.normal, Vector3.up) == 0)
+							{
+								CmdPlaceBuildable(rayHit.point, rayHit.normal);
+								buildableSpawned = true;
+							}
+						}
+					}
+					return;
+				}
+
+				case "Medkit":
+				{
+					if (buildableSpawned)
+					{
+
+					}
+					return;
+				}
+
+				default:
+				{
+					return;
+				}
+			}
+		}
+		if (!Input.GetKey("q"))
+		{
+			qHeld = false;
+		}
+		//*/
+		if (Input.GetKey("e") & targetScript != null & eHeld == false)
+		{
+			eHeld = true;
+			targetScript.OnUse(gameObject);
+			//CmdGiveAuthority(targetScript.gameObject);
+		}
+		if (Input.GetKey("e") == false)
+		{
+			eHeld = false;
 		}
     }
 	
@@ -380,10 +516,5 @@ public class PlayerController : NetworkBehaviour
 	public void PauseMenuClose()
 	{
 		UIenabled = false;
-	}
-
-	void OnStartLocalPlayer()
-	{
-		CmdSetTeamColors(gameObject, team);
 	}
 }

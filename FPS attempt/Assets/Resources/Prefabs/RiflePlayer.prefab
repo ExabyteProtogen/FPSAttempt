@@ -1397,6 +1397,7 @@ MonoBehaviour:
   healthText: {fileID: 1003622186612232847}
   magText: {fileID: 7812798523878694126}
   reserveText: {fileID: 2031608315039383318}
+  interactionText: {fileID: 1514697036270984946}
   pauseScriptObj: {fileID: 0}
   audioSource: {fileID: 5438123382041052078}
   killLine: {fileID: 8300000, guid: 9f7ae298e173cd449985510f1646363a, type: 3}
@@ -1404,8 +1405,8 @@ MonoBehaviour:
   startPositions: []
   playerDecoObject: {fileID: 5450699840567326626}
   playerName: 
-  materialRed: {fileID: 2100000, guid: 0015e71a1e2451549866f5b66f0f6f50, type: 2}
-  materialBlue: {fileID: 2100000, guid: 51291c2bae0696148bca18fb9251a4bc, type: 2}
+  cameraLock: 0
+  turretPrefab: {fileID: 0}
 --- !u!114 &229752588846521107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1441,6 +1442,7 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: 6c238d4e07945664d9e8e04712afd64f, type: 3}
   reloadSound: {fileID: 8300000, guid: 385578e6348c2b745ad169adeb6ef2f9, type: 3}
   earlyReloadSound: {fileID: 8300000, guid: 0c4aa6dcd7e5566498e9103e7afd5629, type: 3}
+  finishReloadSound: {fileID: 0}
   hitSoundVolume: 1
   fireSoundVolume: 1
   reloadSoundVolume: 1
@@ -3165,8 +3167,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
-  m_RenderPostProcessing: 0
-  m_Antialiasing: 0
+  m_RenderPostProcessing: 1
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
   m_Dithering: 0
@@ -3881,6 +3883,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1514697036270984946 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 406345066083193508, guid: 3374cf7c6ac61274a91b1c28fa2f72c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1199901723814775894}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5450699840567292160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3958,15 +3972,15 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 1d9f0f5192bd3914e9a50848b2ed0a50, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7e4dfaf46b28014d9fe8a73f43b410f, type: 3}
---- !u!4 &5450699840567421824 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400000, guid: c7e4dfaf46b28014d9fe8a73f43b410f,
-    type: 3}
-  m_PrefabInstance: {fileID: 5450699840567292160}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5450699840567326626 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100002, guid: c7e4dfaf46b28014d9fe8a73f43b410f,
+    type: 3}
+  m_PrefabInstance: {fileID: 5450699840567292160}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5450699840567421824 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: c7e4dfaf46b28014d9fe8a73f43b410f,
     type: 3}
   m_PrefabInstance: {fileID: 5450699840567292160}
   m_PrefabAsset: {fileID: 0}

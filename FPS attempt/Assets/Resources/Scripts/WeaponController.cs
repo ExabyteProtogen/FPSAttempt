@@ -32,6 +32,7 @@ public class WeaponController : NetworkBehaviour
 	public AudioClip fireSound;
 	public AudioClip reloadSound;
 	public AudioClip earlyReloadSound;
+	public AudioClip finishReloadSound;
 	
 	//Sound Volumes
 	public float hitSoundVolume = 1;
@@ -47,6 +48,7 @@ public class WeaponController : NetworkBehaviour
 	private Animator anim;
 	private GameObject target;
 	private PlayerController targetScript;
+	private PlayerController playerController;
 	private float lastShot;
 	private bool semiAutoHold;
 	private GameObject b;
@@ -89,7 +91,10 @@ public class WeaponController : NetworkBehaviour
 				anim.Play("Base Layer." + gunName + "Reload");
 				if (!(reloadSound == null))
 				{
-					audioSource.PlayOneShot(reloadSound, reloadSoundVolume);
+					audioSource.clip = reloadSound;
+					audioSource.volume = reloadSoundVolume;
+					audioSource.Play();
+					audioSource.priority = 64;
 				}
 				yield return new WaitForSeconds(reloadTime);
 			}
@@ -98,7 +103,10 @@ public class WeaponController : NetworkBehaviour
 				anim.Play("Base Layer." + gunName + "ReloadEarly");
 				if (!(earlyReloadSound == null))
 				{
-					audioSource.PlayOneShot(earlyReloadSound, earlyReloadSoundVolume);
+					audioSource.clip = earlyReloadSound;
+					audioSource.volume = earlyReloadSoundVolume;
+					audioSource.Play();
+					audioSource.priority = 64;
 				}
 				yield return new WaitForSeconds(earlyReloadTime);
 			}
@@ -112,16 +120,23 @@ public class WeaponController : NetworkBehaviour
 			{
 				yield return new WaitForSeconds(reloadTime);
 				anim.Play("Base Layer." + gunName + "Reload");
+				if (!(reloadSound == null))
+				{
+					audioSource.clip = reloadSound;
+					audioSource.volume = reloadSoundVolume;
+					audioSource.Play();
+				}
 				mag += 1;
 				spareAmmo -= 1;
 			}
+			yield return new WaitForSeconds(reloadTime);
 			if (magDiff == magCap)
 			{
 				anim.Play("Base Layer." + gunName + "FinishReload");
+				audioSource.PlayOneShot(finishReloadSound, reloadSoundVolume);
 			}
 			else
 			{
-				//yield return new WaitForSeconds(0.12f * (magDiff));
 				anim.Play("Base Layer." + gunName + "FinishReloadEarly");
 			}
 		}
@@ -139,6 +154,7 @@ public class WeaponController : NetworkBehaviour
     {
         anim = model.GetComponent<Animator>();
 		Debug.Log(gunName);
+		playerController = gameObject.GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
@@ -151,7 +167,7 @@ public class WeaponController : NetworkBehaviour
 			return;
 		}
 		
-        if (Input.GetAxis("Fire1") == 1 && Time.time > lastShot + rof && !semiAutoHold && mag != 0 && !isReloading & !UIenabled)
+        if (Input.GetAxis("Fire1") == 1 && Time.time > lastShot + rof && !semiAutoHold && mag != 0 && !isReloading & !UIenabled & !playerController.weaponLock)
 		{
 			lastShot = Time.time;
 			
@@ -192,7 +208,7 @@ public class WeaponController : NetworkBehaviour
 						//...and deal it if it can
 						target = hit.collider.gameObject;
 						targetScript = target.GetComponent<PlayerController>();
-						if (gameObject.GetComponent<PlayerController>().team != Teams.None & (targetScript.team != gameObject.GetComponent<PlayerController>().team))
+						if (gameObject.GetComponent<PlayerController>().team == Teams.None | (targetScript.team != gameObject.GetComponent<PlayerController>().team))
 						{
 							CmdDamageTarget(target, damage);
 							if (!(hitSound == null))
@@ -216,7 +232,7 @@ public class WeaponController : NetworkBehaviour
 		
 		if (Input.GetKey("r"))
 		{
-			if (!isReloading)
+			if (!isReloading & !playerController.weaponLock)
 			{
 				StartCoroutine(ReloadCoroutine());
 			}

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.1273174, g: 0.13414761, b: 0.12107885, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -557,7 +557,7 @@ MonoBehaviour:
   onlineScene: Assets/Resources/Scenes/Game.unity
   transport: {fileID: 322120989}
   networkAddress: localhost
-  maxConnections: 8
+  maxConnections: 12
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -565,10 +565,30 @@ MonoBehaviour:
   autoCreatePlayer: 0
   playerSpawnMethod: 0
   spawnPrefabs:
-  - {fileID: 4049297465967347308, guid: ba05ef0b5c7bb084fabfb040f0ad90d1, type: 3}
+  - {fileID: 4049297465967347308, guid: 819f2def666a6714486760f54fc62b1d, type: 3}
   - {fileID: 9158703238458094921, guid: 5d94c89f6f374304c9a26ba7fc2c3748, type: 3}
   - {fileID: 4125130721510292830, guid: 841f1df1327d6c4459e3464a70b17842, type: 3}
   - {fileID: 5824409548045988283, guid: 98a0252df9945344780dab86c0862b04, type: 3}
+  - {fileID: 1972098457387598723, guid: fab52b972950f3e4ba49be901f8376d6, type: 3}
+  - {fileID: 4049297465967347308, guid: ba05ef0b5c7bb084fabfb040f0ad90d1, type: 3}
+  - {fileID: 9158703238458094921, guid: b20592c86d1b55b4db5ef2907c71dcee, type: 3}
+  - {fileID: 4125130721510292830, guid: 10cb1ea889f401940982f19e00220788, type: 3}
+  - {fileID: 5824409548045988283, guid: d49e7dc32be8245458edcbfc07c49164, type: 3}
+  - {fileID: 1972098457387598723, guid: 22c39f29b03c1f2479b8490c8867864b, type: 3}
+  - {fileID: 4049297465967347308, guid: b25be31e985a16b4d897f67111a17c9f, type: 3}
+  - {fileID: 9158703238458094921, guid: 6df18c0244703074b819d1873d3e430e, type: 3}
+  - {fileID: 4125130721510292830, guid: 7ea54bc395d36074496c96200b584827, type: 3}
+  - {fileID: 5824409548045988283, guid: cc0bcad62f2d26544921eb6027284852, type: 3}
+  - {fileID: 1972098457387598723, guid: 7ca6f6aa608f316459d157502cbb7949, type: 3}
+  - {fileID: 7584811448080401329, guid: b7b255b939997f0478c22dde99ceb08d, type: 3}
+  - {fileID: 9158703238458094921, guid: 51ed32dc7da754045ab3eb07ede4f42b, type: 3}
+  - {fileID: 9158703238458094921, guid: fe8fddeccec079344bf41e9271d00707, type: 3}
+  - {fileID: 9158703238458094921, guid: 4700c2d7d5a0ae841bd928e4568eb05e, type: 3}
+  - {fileID: 9158703238458094921, guid: fb55c016ce367de4186d837a30fe6c39, type: 3}
+  - {fileID: 9158703238458094921, guid: 61f09ec2a0768da43be851d43e732741, type: 3}
+  - {fileID: 9158703238458094921, guid: ba443b56905d6054da4db9198bf8b0cc, type: 3}
+  - {fileID: 7095479565759176405, guid: 8484768c9720627488f4c45258a42720, type: 3}
+  mySpawns: []
   weaponChoice: 
   playerName: 
   playerTeam: 0
